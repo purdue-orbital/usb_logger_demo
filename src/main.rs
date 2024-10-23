@@ -11,6 +11,9 @@ use embassy_time::Timer;
 use embassy_usb_logger;
 use {defmt_rtt as _, panic_probe as _};
 
+mod iis2mdc;
+mod bma530;
+mod adxl314;
 mod bmp585;
 
 bind_interrupts!(struct Irqs {
@@ -32,7 +35,7 @@ async fn main(spawner: Spawner) {
 
 	// I2c
 	let mut config = i2c::Config::default();
-	config.frequency = 50000; 
+	config.frequency = 100000;
 	let sda = p.PIN_8;
 	let scl = p.PIN_9;
 	let mut i2c_bus = i2c::I2c::new_blocking(p.I2C0, scl, sda, config);
@@ -45,7 +48,7 @@ async fn main(spawner: Spawner) {
 
 	loop {
 		log::info!("Hello There!");
-		let hrmmmmm = bmp585::get_ids(&mut i2c_bus);
+		let hrmmmmm = bma530::get_ids(&mut i2c_bus);
 		log::info!("id: {} {}", hrmmmmm[0], hrmmmmm[1]);
 		Timer::after_millis(500).await;
 	}
