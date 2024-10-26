@@ -16,6 +16,24 @@ pub fn get_ids(bus: &mut impl I2c) -> [u8; 2] {
 	[buf[0], 0]
 }
 
+pub fn get_status(bus: &mut impl I2c) -> u8 {
+	let mut buf = [0_u8; 1];
+
+	let res = bus.write_read(ADDR, &[0x28], &mut buf); // check if issues
+
+	if res.is_err() {
+		log::error!("{:?}", res);
+	}
+
+	let nvm_error = buf[0] << 5; // eliminate left digits
+	nvm_error = nvm_error >> 7; // eliminate right digits
+	
+	let nvm_rdy = buf[0] << 6; // eliminate left digits
+	nvm_rdy = nvm_rdy >> 7; // eliminate right digits
+
+	[buf[0], 0]
+}
+
 pub fn get_pressure(bus: &mut impl I2c) -> u32 {
 	let mut buf = [0_u8; 3];
 
@@ -25,10 +43,10 @@ pub fn get_pressure(bus: &mut impl I2c) -> u32 {
 	}
 
 	let output = u32::from_le_bytes([buf[0], buf[1], buf[2], 0]);
-	output = output >> 6
+	// let div_thingy: f32 = (1_u32 << 6).into();
+	let div_thingy: f32 = 1_u32 << 16 as f32;
+	output as f32 / div_thingy
 }
-
-
 
 pub fn get_temperature(bus: &mut impl I2c) -> f32 {
 	let mut buf = [0_u8; 3];
@@ -39,7 +57,7 @@ pub fn get_temperature(bus: &mut impl I2c) -> f32 {
 	}
 
 	let output = u32::from_le_bytes([buf[0], buf[1], buf[2], 0]);
-	log::info!("temp: {}", output);
-	let div_thingy: f32 = (1_u32 << 16).into();
+	//let div_thingy: f32 = (1_u32 << 16).into();
+	let div_thingy: f32 = 1_u32 << 16 as f32;
 	output as f32 / div_thingy
 }
