@@ -31,7 +31,7 @@ pub fn get_status(bus: &mut impl I2c) -> u8 {
 	let nvm_rdy = buf[0] << 6; // eliminate left digits
 	nvm_rdy = nvm_rdy >> 7; // eliminate right digits
 
-	[buf[0], 0]
+	if (!nvm_error & nvm_rdy) {0} else {1} //return 0 if no issues, 1 if issues
 }
 
 pub fn get_pressure(bus: &mut impl I2c) -> u32 {
