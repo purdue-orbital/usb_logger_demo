@@ -34,7 +34,7 @@ pub fn get_status(bus: &mut impl I2c) -> u8 {
 	if !nvm_error == nvm_rdy {0} else {1} // return 0 if no issues, 1 if issues
 }
 
-pub fn get_pressure(bus: &mut impl I2c) -> u32 {
+pub fn get_pressure(bus: &mut impl I2c) -> f32 {
 	let mut buf = [0_u8; 3];
 
 	let res = bus.write_read(ADDR, &[0x20], &mut buf); // get pressure
@@ -44,7 +44,7 @@ pub fn get_pressure(bus: &mut impl I2c) -> u32 {
 
 	let output = u32::from_le_bytes([buf[0], buf[1], buf[2], 0]);
 	// let div_thingy: f32 = (1_u32 << 6).into();
-	let div_thingy: f32 = 1_u32 << 16 as f32;
+	let div_thingy: f32 = (1_u32 << 16) as f32;
 	output as f32 / div_thingy
 }
 
@@ -58,6 +58,6 @@ pub fn get_temperature(bus: &mut impl I2c) -> f32 {
 
 	let output = u32::from_le_bytes([buf[0], buf[1], buf[2], 0]);
 	//let div_thingy: f32 = (1_u32 << 16).into();
-	let div_thingy: f32 = 1_u32 << 16 as f32;
+	let div_thingy: f32 = (1_u32 << 16) as f32;
 	output as f32 / div_thingy
 }
