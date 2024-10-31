@@ -46,10 +46,13 @@ async fn main(spawner: Spawner) {
 	config.compare_b = 8;
 	let mut pin0 = pwm::Pwm::new_output_a(p.PWM_SLICE0, p.PIN_0, config);
 
+	bmp585::set_power_mode(&mut i2c_bus, bmp585::PowerMode::Normal);
+	Timer::after_millis(1000).await;
+
 	loop {
 		log::info!("Hello There!");
-		let hrmmmmm = bma530::get_ids(&mut i2c_bus);
-		log::info!("id: {} {}", hrmmmmm[0], hrmmmmm[1]);
+		let hrmmmmm = bmp585::get_temperature(&mut i2c_bus);
+		log::info!("id: {}", hrmmmmm);
 		Timer::after_millis(500).await;
 	}
 }
