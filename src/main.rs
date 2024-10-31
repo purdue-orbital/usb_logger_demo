@@ -51,7 +51,7 @@ async fn main(spawner: Spawner) {
 
 	loop {
 		log::info!("Hello There!");
-		let hrmmmmm = bmp585::get_temperature(&mut i2c_bus);
+		let hrmmmmm = bmp585::get_pressure(&mut i2c_bus);
 		log::info!("id: {}", hrmmmmm);
 		Timer::after_millis(500).await;
 	}

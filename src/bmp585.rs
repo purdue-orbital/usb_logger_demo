@@ -69,7 +69,6 @@ pub fn get_temperature(bus: &mut impl I2c) -> f32 {
 	}
 	
 	let output = u32::from_le_bytes([buf[0], buf[1], buf[2], 0]);
-	log::info!("raw: {}", output);
 
 	//let div_thingy: f32 = (1_u32 << 16).into();
 	let div_thingy: f32 = (1_u32 << 16) as f32;
