@@ -2,7 +2,8 @@ use embedded_hal::i2c::I2c;
 // const ADDR: u8 = 0x46; // alt of 0x47
 const ADDR: u8 = 0x47;
 
-//add 4.3.9 post power up procedure (pg 19)
+// decide if want to add Low Power Normal mode - apply 
+// determine OSR rate higher means less error but more power consumed
 
 #[derive(Debug)]
 pub enum PowerMode {
@@ -46,7 +47,7 @@ pub fn get_status(bus: &mut impl I2c) -> u8 {
 	if !nvm_error == nvm_rdy {0} else {1} // return 0 if no issues, 1 if issues
 }
 
-pub fn get_pressure(bus: &mut impl I2c) -> f32 {
+pub fn get_pressure(bus: &mut impl I2c) -> f32 { //issue getting pressure here, refer to 4.4.1 config (pg20) write 1 to 0x36
 	let mut buf = [0_u8; 3];
 
 	let res = bus.write_read(ADDR, &[0x20], &mut buf); // get pressure
@@ -81,8 +82,26 @@ pub fn set_power_mode(bus: &mut impl I2c, power_mode: PowerMode) {
 
 	bus.write_read(ADDR, &[0x37], &mut buf).unwrap();
 
-	buf[0] &= !PowerMode::MASK;
-	buf[0] |= power_mode as u8;
+	buf[0] &= !PowerMode::MASK; // set to 0
+	buf[0] |= power_mode as u8; // Add powerMode setting to buffer
 
 	bus.write(ADDR, &[0x37, buf[0]]).unwrap();
+}
+
+pub fn set_osr_press(bus: &mut impl I2c) { // Enable pressure reading from OSR
+	let mut buf = [0];
+
+	bus.write_read(ADDR, &[0x36], &mut buf).unwrap();
+
+	buf[0] &= !0b0100_0000; // set to 0
+	buf[0] |= 0b0100_0000; // add mode setting to buffer
+}
+
+pub fn set_fifo_press(bus: &mut impl I2c) { // Enable pressure reading from FIFO
+	let mut buf = [0];
+
+	bus.write_read(ADDR, &[0x18], &mut buf).unwrap();
+
+	buf[0] &= !0b0000_0011; // set to 0
+	buf[0] |= 0b11; // add mode setting to buffer (0b11 harder to change than 0b10)
 }
