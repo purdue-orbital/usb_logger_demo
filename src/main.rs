@@ -46,13 +46,19 @@ async fn main(spawner: Spawner) {
 	config.compare_b = 8;
 	let mut pin0 = pwm::Pwm::new_output_a(p.PWM_SLICE0, p.PIN_0, config);
 
-	bmp585::set_power_mode(&mut i2c_bus, bmp585::PowerMode::Normal);
+	// bmp585::set_power_mode(&mut i2c_bus, bmp585::PowerMode::Normal);
 	Timer::after_millis(1000).await;
 
 	loop {
-		log::info!("Hello There!");
-		let hrmmmmm = bmp585::get_pressure(&mut i2c_bus);
-		log::info!("id: {}", hrmmmmm);
+		
+		// let hrmmmmm: f32 = bmp585::get_pressure(&mut i2c_bus);
+		// log::info!("id: {}", hrmmmmm);
+
+
+		// adxl314 testing
+		let acceleration = adxl314::read_acceleration(&mut i2c_bus);
+		log::info!("acceleration: {}", acceleration);
+
 		Timer::after_millis(500).await;
 	}
 }
