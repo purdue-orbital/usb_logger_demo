@@ -57,7 +57,7 @@ async fn main(spawner: Spawner) {
 
 		// adxl314 testing
 		let acceleration = adxl314::read_acceleration(&mut i2c_bus);
-		log::info!("acceleration: {}", acceleration);
+		log::info!("acceleration: {:?}", acceleration);
 
 		Timer::after_millis(500).await;
 	}
