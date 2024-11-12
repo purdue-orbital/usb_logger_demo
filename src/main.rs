@@ -46,7 +46,9 @@ async fn main(spawner: Spawner) {
 	config.compare_b = 8;
 	let mut pin0 = pwm::Pwm::new_output_a(p.PWM_SLICE0, p.PIN_0, config);
 
-	// bmp585::set_power_mode(&mut i2c_bus, bmp585::PowerMode::Normal);
+	bmp585::set_power_mode(&mut i2c_bus, bmp585::PowerMode::Normal);
+	bmp585::set_fifo_press(&mut i2c_bus);
+	bmp585::set_osr_press(&mut i2c_bus);
 	Timer::after_millis(1000).await;
 
 	loop {
