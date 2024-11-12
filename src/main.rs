@@ -52,11 +52,15 @@ async fn main(spawner: Spawner) {
 	Timer::after_millis(1000).await;
 
 	loop {
-		log::info!("Hello There!");
+		
+		// let hrmmmmm: f32 = bmp585::get_pressure(&mut i2c_bus);
+		// log::info!("id: {}", hrmmmmm);
 
 
-		let hrmmmmm = bmp585::get_pressure(&mut i2c_bus);
-		log::info!("id: {}", hrmmmmm);
+		// adxl314 testing
+		let acceleration = adxl314::read_acceleration(&mut i2c_bus);
+		log::info!("acceleration: {}", acceleration);
+
 		Timer::after_millis(500).await;
 	}
 }
