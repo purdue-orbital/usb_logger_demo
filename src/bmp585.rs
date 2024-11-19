@@ -3,6 +3,8 @@ use embedded_hal::i2c::I2c;
 // const ADDR: u8 = 0x46; // alt of 0x47
 const ADDR: u8 = 0x47;
 
+// set ODR to 100 Hz
+// math calc pressure to altitude, some challenges for supersonic
 // decide if want to add Low Power Normal mode - apply
 // determine OSR rate higher means less error but more power consumed
 
