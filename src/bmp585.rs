@@ -3,7 +3,7 @@ use embedded_hal::i2c::I2c;
 // const ADDR: u8 = 0x46; // alt of 0x47
 const ADDR: u8 = 0x47;
 
-// set ODR to 100 Hz
+// set ODR to 100 Hz; pg 18
 // math calc pressure to altitude, some challenges for supersonic
 // decide if want to add Low Power Normal mode - apply
 // determine OSR rate higher means less error but more power consumed
@@ -14,6 +14,28 @@ pub enum PowerMode {
 	Normal = 0b01,
 	Forced = 0b10,
 	NonStop = 0b11
+}
+
+pub enum OsrT { //note not all OSR rates are valid; refer to datasheet for appropriate combinations
+	X1 = 0x0,
+	X2 = 0x1,
+	X4 = 0x2,
+	X8 = 0x3,
+	X16 = 0x4,
+	X32 = 0x5,
+	X64 = 0x6,
+	X128 = 0x7
+}
+
+pub enum OsrP { //note not all OSR rates are valid; refer to datasheet for appropriate combinations
+	X1 = 0x0 << 3,
+	X2 = 0x1 << 3,
+	X4 = 0x2 << 3,
+	X8 = 0x3 << 3,
+	X16 = 0x4 << 3,
+	X32 = 0x5 << 3,
+	X64 = 0x6 << 3,
+	X128 = 0x7 << 3
 }
 
 impl PowerMode {
@@ -91,6 +113,18 @@ pub fn set_power_mode(bus: &mut impl I2c, power_mode: PowerMode) {
 	bus.write(ADDR, &[0x37, buf[0]]).unwrap();
 }
 
+pub fn set_odr(bus: &mut impl I2c, osr_p: OsrP, osr_t: OsrT) {
+	let mut buf = [0];
+
+	bus.write_read(ADDR, &[0x36], &mut buf).unwrap();
+
+	buf[0] &= !0b0011_1111; // set to 0
+	buf[0] |= osr_p as u8; // Add OSR pressure rate setting to buffer
+	buf[0] |= osr_t as u8; //Add OSR temperature rate setting to buffer
+
+	bus.write(ADDR, &[0x36, buf[0]]).unwrap();
+}
+
 pub fn set_osr_press(bus: &mut impl I2c) { // Enable pressure reading from OSR
 	let mut buf = [0b01111011];
 
@@ -112,13 +146,4 @@ pub fn get_osr_press(bus: &mut impl I2c) -> u8 {
 	}
 
 	buf[0]
-}
-
-pub fn set_fifo_press(bus: &mut impl I2c) { // Enable pressure reading from FIFO
-	let mut buf = [0];
-
-	bus.write_read(ADDR, &[0x18], &mut buf).unwrap();
-
-	buf[0] &= !0b0000_0011; // set to 0
-	buf[0] |= 0b11; // add mode setting to buffer (0b11 harder to change than 0b10)
 }
