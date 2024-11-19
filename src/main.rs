@@ -51,7 +51,7 @@ async fn main(spawner: Spawner) {
 
 	loop {
 		
-		let hrmmmmm: f32 = bmp585::get_pressure(&mut i2c_bus);
+		let hrmmmmm = bmp585::get_osr_press(&mut i2c_bus);
 		log::info!("temp: {}", hrmmmmm);
 
 

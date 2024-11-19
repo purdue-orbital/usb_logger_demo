@@ -95,6 +95,18 @@ pub fn set_osr_press(bus: &mut impl I2c) { // Enable pressure reading from OSR
 	bus.write_read(ADDR, &[0x36], &mut buf).unwrap();
 }
 
+pub fn get_osr_press(bus: &mut impl I2c) -> u8 {
+	let mut buf = [0_u8; 1];
+
+	let res = bus.write_read(ADDR, &[0x36], &mut buf); // check if issues
+
+	if res.is_err() {
+		log::error!("{:?}", res);
+	}
+
+	buf[0]
+}
+
 pub fn set_fifo_press(bus: &mut impl I2c) { // Enable pressure reading from FIFO
 	let mut buf = [0];
 
