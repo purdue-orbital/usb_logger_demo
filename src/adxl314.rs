@@ -16,6 +16,15 @@ pub fn get_ids(bus: &mut impl I2c) -> Result<[u8; 2], ()> {
     Ok([0,0])
 }
 
+pub fn setup (bus: &mut impl I2c) {
+    let mut buf = [0; 1];
+    let _ = bus.write_read(ADDR, &[0x38], &mut buf);
+    // reset target bits to 0
+    buf[0] &= !0b1100_0000;
+    buf[0] |= 0b10 << 6;
+    let _ =bus.write(ADDR, &[0x38, buf[0]]);
+}
+
 pub fn read_acceleration(bus: &mut impl I2c) -> Result<(f32, f32, f32), ()> {
     let mut buf = [0_u8; 6];
     let res = bus.write_read(ADDR, &[REG_DATAX0], &mut buf);
