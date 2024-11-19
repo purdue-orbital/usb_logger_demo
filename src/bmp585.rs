@@ -93,6 +93,11 @@ pub fn set_osr_press(bus: &mut impl I2c) { // Enable pressure reading from OSR
 	let mut buf = [0b01111011];
 
 	bus.write_read(ADDR, &[0x36], &mut buf).unwrap();
+
+	buf[0] &= !0b0100_0000; // set target to 0
+	buf[0] |= 0b10 << 5 as u8; // Add setting to buffer
+
+	bus.write(ADDR, &[0x37, buf[0]]).unwrap();
 }
 
 pub fn get_osr_press(bus: &mut impl I2c) -> u8 {
