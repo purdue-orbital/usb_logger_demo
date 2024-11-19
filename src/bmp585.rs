@@ -90,7 +90,7 @@ pub fn set_power_mode(bus: &mut impl I2c, power_mode: PowerMode) {
 }
 
 pub fn set_osr_press(bus: &mut impl I2c) { // Enable pressure reading from OSR
-	let mut buf = [0b0100000];
+	let mut buf = [0b01111011];
 
 	bus.write_read(ADDR, &[0x36], &mut buf).unwrap();
 }
