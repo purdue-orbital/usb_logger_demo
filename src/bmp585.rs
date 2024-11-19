@@ -1,8 +1,9 @@
 use embedded_hal::i2c::I2c;
+
 // const ADDR: u8 = 0x46; // alt of 0x47
 const ADDR: u8 = 0x47;
 
-// decide if want to add Low Power Normal mode - apply 
+// decide if want to add Low Power Normal mode - apply
 // determine OSR rate higher means less error but more power consumed
 
 #[derive(Debug)]
@@ -40,7 +41,7 @@ pub fn get_status(bus: &mut impl I2c) -> u8 {
 
 	let mut nvm_error = buf[0] << 5; // eliminate left digits
 	nvm_error = nvm_error >> 7; // eliminate right digits
-	
+
 	let mut nvm_rdy = buf[0] << 6; // eliminate left digits
 	nvm_rdy = nvm_rdy >> 7; // eliminate right digits
 
@@ -68,7 +69,7 @@ pub fn get_temperature(bus: &mut impl I2c) -> f32 {
 	if res.is_err() { //error handling
 		log::error!("{:?}", res);
 	}
-	
+
 	let output = u32::from_le_bytes([buf[0], buf[1], buf[2], 0]);
 
 	//let div_thingy: f32 = (1_u32 << 16).into();
@@ -89,12 +90,9 @@ pub fn set_power_mode(bus: &mut impl I2c, power_mode: PowerMode) {
 }
 
 pub fn set_osr_press(bus: &mut impl I2c) { // Enable pressure reading from OSR
-	let mut buf = [0];
+	let mut buf = [0b0100000];
 
 	bus.write_read(ADDR, &[0x36], &mut buf).unwrap();
-
-	buf[0] &= !0b0100_0000; // set to 0
-	buf[0] |= 0b0100_0000; // add mode setting to buffer
 }
 
 pub fn set_fifo_press(bus: &mut impl I2c) { // Enable pressure reading from FIFO

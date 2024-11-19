@@ -3,12 +3,10 @@
 
 use embassy_executor::Spawner;
 use embassy_rp::bind_interrupts;
-use embassy_rp::pac::pwm::Pwm;
 use embassy_rp::peripherals::USB;
 use embassy_rp::usb::{Driver, InterruptHandler};
 use embassy_rp::{i2c, pwm};
 use embassy_time::Timer;
-use embassy_usb_logger;
 use {defmt_rtt as _, panic_probe as _};
 
 mod iis2mdc;
@@ -47,19 +45,19 @@ async fn main(spawner: Spawner) {
 	let mut pin0 = pwm::Pwm::new_output_a(p.PWM_SLICE0, p.PIN_0, config);
 
 	bmp585::set_power_mode(&mut i2c_bus, bmp585::PowerMode::Normal);
-	bmp585::set_fifo_press(&mut i2c_bus);
+	//bmp585::set_fifo_press(&mut i2c_bus);
 	bmp585::set_osr_press(&mut i2c_bus);
 	Timer::after_millis(1000).await;
 
 	loop {
 		
-		// let hrmmmmm: f32 = bmp585::get_pressure(&mut i2c_bus);
-		// log::info!("id: {}", hrmmmmm);
+		let hrmmmmm: f32 = bmp585::get_pressure(&mut i2c_bus);
+		log::info!("temp: {}", hrmmmmm);
 
 
 		// adxl314 testing
-		let acceleration = adxl314::read_acceleration(&mut i2c_bus);
-		log::info!("acceleration: {:?}", acceleration);
+		// let acceleration = adxl314::read_acceleration(&mut i2c_bus);
+		// log::info!("acceleration: {:?}", acceleration);
 
 		Timer::after_millis(500).await;
 	}
