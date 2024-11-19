@@ -49,6 +49,9 @@ async fn main(spawner: Spawner) {
 	bmp585::set_osr_press(&mut i2c_bus);
 	Timer::after_millis(1000).await;
 
+	// ADXL 314
+	adxl314::setup(&mut i2c_bus); // This sets the reading mode to Stream
+
 	loop {
 		
 		let hrmmmmm = bmp585::get_pressure(&mut i2c_bus);
