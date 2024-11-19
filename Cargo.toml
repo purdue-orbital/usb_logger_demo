@@ -14,7 +14,7 @@ panic-probe = { version = "0.3.2", features = ["print-defmt"] }
 defmt = "0.3.8"
 defmt-rtt = "0.4.1"
 embedded-hal = "1.0.0"
-anyhow = { version = "1.0.89", default-features = false }
+# anyhow = { version = "1.0.93", default-features = false }
 
 [profile.dev]
 lto = "thin"
