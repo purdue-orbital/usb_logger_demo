@@ -23,7 +23,7 @@ pub fn setup (bus: &mut impl I2c) {
     // reset target bits to 0
     buf[0] &= !0b1100_0000;
     buf[0] |= 0b10 << 6;
-    let _ =bus.write(ADDR, &[0x38, buf[0]]);
+    let _ = bus.write(ADDR, &[0x38, buf[0]]);
 }
 
 pub fn read_acceleration(bus: &mut impl I2c) -> Result<(f32, f32, f32), ()> {
