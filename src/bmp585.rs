@@ -118,7 +118,7 @@ pub fn set_odr(bus: &mut impl I2c, osr_p: OsrP, osr_t: OsrT) {
 
 	bus.write_read(ADDR, &[0x36], &mut buf).unwrap();
 
-	buf[0] &= !0b0011_1111; // set to 0
+	buf[0] &= !0b0011_1111; // set target bits to 0
 	buf[0] |= osr_p as u8; // Add OSR pressure rate setting to buffer
 	buf[0] |= osr_t as u8; //Add OSR temperature rate setting to buffer
 

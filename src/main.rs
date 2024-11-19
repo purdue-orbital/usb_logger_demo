@@ -55,7 +55,8 @@ async fn main(spawner: Spawner) {
 	loop {
 		
 		let hrmmmmm = bmp585::get_pressure(&mut i2c_bus);
-		log::info!("temp: {}", hrmmmmm);
+		let cheese = bmp585::get_temperature(&mut i2c_bus);
+		log::info!("pressure: {} temperature: {}", hrmmmmm, cheese);
 
 
 		// adxl314 testing
