@@ -44,17 +44,20 @@ async fn main(spawner: Spawner) {
 	config.compare_b = 8;
 	let mut pin0 = pwm::Pwm::new_output_a(p.PWM_SLICE0, p.PIN_0, config);
 
-	bmp585::set_power_mode(&mut i2c_bus, bmp585::PowerMode::Normal);
+	bmp585::set_power_mode(&mut i2c_bus, bmp585::PowerMode::NonStop);
 	//bmp585::set_fifo_press(&mut i2c_bus);
 	bmp585::set_osr_press(&mut i2c_bus);
 	Timer::after_millis(1000).await;
+
+	// ADXL 314
+	adxl314::setup(&mut i2c_bus); // This sets the reading mode to Stream
 
 	// ADXL
 	adxl314::setup(&mut i2c_bus); // This sets the reading mode to Stream
 
 	loop {
 		
-		let hrmmmmm: f32 = bmp585::get_pressure(&mut i2c_bus);
+		let hrmmmmm = bmp585::get_pressure(&mut i2c_bus);
 		log::info!("temp: {}", hrmmmmm);
 
 

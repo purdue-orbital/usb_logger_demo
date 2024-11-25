@@ -3,6 +3,8 @@ use embedded_hal::i2c::I2c;
 // const ADDR: u8 = 0x46; // alt of 0x47
 const ADDR: u8 = 0x47;
 
+// set ODR to 100 Hz
+// math calc pressure to altitude, some challenges for supersonic
 // decide if want to add Low Power Normal mode - apply
 // determine OSR rate higher means less error but more power consumed
 
@@ -90,9 +92,26 @@ pub fn set_power_mode(bus: &mut impl I2c, power_mode: PowerMode) {
 }
 
 pub fn set_osr_press(bus: &mut impl I2c) { // Enable pressure reading from OSR
-	let mut buf = [0b0100000];
+	let mut buf = [0b01111011];
 
 	bus.write_read(ADDR, &[0x36], &mut buf).unwrap();
+
+	buf[0] &= !0b0100_0000; // set target to 0
+	buf[0] |= 0b10 << 5 as u8; // Add setting to buffer
+
+	bus.write(ADDR, &[0x36, buf[0]]).unwrap();
+}
+
+pub fn get_osr_press(bus: &mut impl I2c) -> u8 {
+	let mut buf = [0_u8; 1];
+
+	let res = bus.write_read(ADDR, &[0x36], &mut buf); // check if issues
+
+	if res.is_err() {
+		log::error!("{:?}", res);
+	}
+
+	buf[0]
 }
 
 pub fn set_fifo_press(bus: &mut impl I2c) { // Enable pressure reading from FIFO
