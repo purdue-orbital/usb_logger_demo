@@ -44,9 +44,9 @@ async fn main(spawner: Spawner) {
 	config.compare_b = 8;
 	let mut pin0 = pwm::Pwm::new_output_a(p.PWM_SLICE0, p.PIN_0, config);
 
-	bmp585::set_power_mode(&mut i2c_bus, bmp585::PowerMode::NonStop);
-	//bmp585::set_fifo_press(&mut i2c_bus);
-	bmp585::set_osr_press(&mut i2c_bus);
+	bmp585::set_power_mode(&mut i2c_bus, bmp585::PowerMode::NonStop); // change to nonstop (continuous data mode)
+	bmp585::set_osr_press(&mut i2c_bus); // Enable pressure reading mode
+	bmp585::set_odr(&mut i2c_bus, bmp585::OsrP::X16, bmp585::OsrT::X8); // set ODR to 100 Hz
 	Timer::after_millis(1000).await;
 
 	// ADXL 314
@@ -58,7 +58,8 @@ async fn main(spawner: Spawner) {
 	loop {
 		
 		let hrmmmmm = bmp585::get_pressure(&mut i2c_bus);
-		log::info!("temp: {}", hrmmmmm);
+		let cheese = bmp585::get_temperature(&mut i2c_bus);
+		log::info!("pressure: {} temperature: {}", hrmmmmm, cheese);
 
 
 		// adxl314 testing
