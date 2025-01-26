@@ -2,7 +2,7 @@ alias b := build
 alias u := uf2
 
 # only for windows!!!!
-set shell := ["powershell.exe", "-c"]
+#set shell := ["powershell.exe", "-c"]
 
 check:
 	cargo check
@@ -22,10 +22,10 @@ build_release:
 	cargo build --release
 
 # build release and convert to uf2
-uf2: build_release
+uf2: 
+	cargo build --release
 	elf2uf2-rs target/thumbv6m-none-eabi/release/usb_logger_demo usb_logger_demo.uf2
-	explorer.exe .
 
 clean:
 	cargo clean
-	rm micro_demo.uf2
+	rm *.uf2
