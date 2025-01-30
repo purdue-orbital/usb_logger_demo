@@ -1,3 +1,7 @@
+#
+# Use 'just _____' with one of the commands below to run the combination
+# Note: If not working, try 'cargo install just'
+#
 alias b := build
 alias u := uf2
 
