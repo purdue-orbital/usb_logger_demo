@@ -33,7 +33,7 @@ pub fn get_x(bus: &mut impl I2c) -> f32 { //issue getting pressure here, refer t
 		log::error!("{:?}", res);
 	}
 
-	let output = u32::from_le_bytes([buf[0], buf[1], buf[2], 0]);
+	let output = u16::from_le_bytes([buf[0], buf[1]]);
 
 	output as f32
 }
@@ -46,7 +46,7 @@ pub fn get_y(bus: &mut impl I2c) -> f32 { //issue getting pressure here, refer t
 		log::error!("{:?}", res);
 	}
 
-	let output = u32::from_le_bytes([buf[0], buf[1], buf[2], 0]);
+	let output = u16::from_le_bytes([buf[0], buf[1]]);
 
 	output as f32 
 }
@@ -59,7 +59,7 @@ pub fn get_z(bus: &mut impl I2c) -> f32 { //issue getting pressure here, refer t
 		log::error!("{:?}", res);
 	}
 
-	let output = u32::from_le_bytes([buf[0], buf[1], buf[2], 0]);
+	let output = u16::from_le_bytes([buf[0], buf[1]]);
 
 	output as f32
 }
