@@ -1,6 +1,6 @@
 use embedded_hal::i2c::I2c;
 
-const ADDR: u8 = 0b0011110;
+const ADDR: u8 = 0b0011110; // need new bus ID here
 
 pub fn get_ids(bus: &mut impl I2c) -> u8 {
 	let mut buf = [0_u8; 1];
